@@ -2,17 +2,19 @@ import { Form } from './components/form'
 import { api } from '@/services/api'
 import { getCookieServer } from '@/lib/cookieServer'
 
-export default async function Product(){
+export default async function Product() {
+  const token = await getCookieServer(); 
 
-  const token = getCookieServer();
+  if (!token) {
+    throw new Error("Token não encontrado, acesso não autorizado.");
+  }
 
+  // Faça a requisição para obter categorias
   const response = await api.get("/category", {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  return(
-    <Form categories={response.data} />
-  )
+  return <Form categories={response.data} />;
 }
